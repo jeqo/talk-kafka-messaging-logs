@@ -1,0 +1,7 @@
+{"namespace": "io.github.jeqo.talk.kafka.record.avro",
+ "type": "record",
+ "name": "User",
+ "fields": [
+     {"name": "name", "type": "string"}
+ ]
+}

@@ -8,8 +8,8 @@ How you get started with Kafka
 
 How did you use Messaging Systems in the past
 
-Why you're giving this talk
 
+Why you're giving this talk
 0. **Why we are talking about streaming?**
 
 How do we get here?
@@ -73,6 +73,18 @@ communication, where you ask an external system to **do** something.
 
 9. Comparison at a message system level
 
+10. **What about stream processing?**
+
+Show options
+
+11. Stream and Tables
+
+12. What about the ecosystem?
+
+13. Kafka Connectors
+
+14. Bonus: Integration with OSB / Oracle and Kafka
+
 n. **Twitter accounts to follow**
 
 * Jay Kreps
@@ -82,6 +94,15 @@ n. **Twitter accounts to follow**
 * Neha Nerkadhe
 
 *
+
+Questions:
+
+* How many of you use database as an integration channel?
+
+* How many of you use topics? or instead use queues with headers to
+differentiate Consumers?
+
+
 
 You should be able to answer this question at Quora:
 
