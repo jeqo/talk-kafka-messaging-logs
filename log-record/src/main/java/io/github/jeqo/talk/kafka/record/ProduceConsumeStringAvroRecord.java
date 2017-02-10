@@ -1,9 +1,7 @@
 package io.github.jeqo.talk.kafka.record;
 
 import io.github.jeqo.talk.kafka.record.avro.User;
-import org.apache.avro.io.*;
-import org.apache.avro.specific.SpecificDatumReader;
-import org.apache.avro.specific.SpecificDatumWriter;
+import io.github.jeqo.talk.kafka.record.avro.UserAvroSerdes;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -16,8 +14,6 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.stream.IntStream;
@@ -50,23 +46,11 @@ public class ProduceConsumeStringAvroRecord {
         Producer<String, byte[]> producer = new KafkaProducer<>(properties);
 
         IntStream.rangeClosed(1, 100).boxed()
-                .map(number -> {
-                            try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-                                BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(out, null);
-                                DatumWriter<User> writer = new SpecificDatumWriter<>(User.getClassSchema());
-                                User user = new User(String.format("user-%s", number.toString()));
-                                writer.write(user, encoder);
-                                encoder.flush();
-                                return new ProducerRecord<>(
-                                        TOPIC,
-                                        number.toString(),
-                                        out.toByteArray());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                return null;
-                            }
-                        }
-                ).forEach(record -> producer.send(record));
+                .map(number -> new ProducerRecord<>(
+                        TOPIC, //topic
+                        number.toString(), //key
+                        UserAvroSerdes.serialize(new User(String.format("user-%s", number.toString()))))) //value
+                .forEach(record -> producer.send(record));
         producer.close();
     }
 
@@ -84,16 +68,12 @@ public class ProduceConsumeStringAvroRecord {
 
         ConsumerRecords<String, byte[]> records = consumer.poll(10000);
 
-        for (ConsumerRecord<String, byte[]> record : records) {
-            try {
-                DatumReader<User> reader = new SpecificDatumReader<>(User.getClassSchema());
-                Decoder decoder = DecoderFactory.get().binaryDecoder(record.value(), null);
-                User user = reader.read(null, decoder);
-                out.printf("key = %s value = %s%n", record.key(), user.getName().toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        for (ConsumerRecord<String, byte[]> record : records)
+            out.printf(
+                    "key = %s value = %s%n",
+                    record.key(),
+                    UserAvroSerdes.deserialize(record.value()).getName().toString());
+
         consumer.close();
     }
 }

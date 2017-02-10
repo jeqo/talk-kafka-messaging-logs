@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.stream.IntStream;
 
+import static java.lang.System.out;
+
 /**
  * Created by jeqo on 06.02.17.
  */
@@ -45,8 +47,8 @@ public class ProduceConsumeIntegerStringRecord {
                 .map(number ->
                         new ProducerRecord<>(
                                 TOPIC,
-                                number,
-                                String.format("record-%s", number)))
+                                number, //Key
+                                String.format("record-%s", number))) //Value
                 .forEach(record -> producer.send(record));
         producer.close();
     }
@@ -66,7 +68,10 @@ public class ProduceConsumeIntegerStringRecord {
         ConsumerRecords<Integer, String> records = consumer.poll(10000);
 
         for (ConsumerRecord<Integer, String> record : records)
-            System.out.printf("key = %s value = %s%n", record.key(), record.value());
+            out.printf(
+                    "key = %s value = %s%n",
+                    record.key(),
+                    record.value());
 
         consumer.close();
     }

@@ -17,6 +17,8 @@ import java.util.Properties;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
+import static java.lang.System.out;
+
 /**
  * Created by jeqo on 06.02.17.
  */
@@ -45,9 +47,9 @@ public class ProduceConsumeLongByteArrayRecord {
         LongStream.rangeClosed(1, 100).boxed()
                 .map(number ->
                         new ProducerRecord<>(
-                                TOPIC,
-                                number,
-                                String.format("record-%s", number.toString()).getBytes()))
+                                TOPIC, //topic
+                                number, //key
+                                String.format("record-%s", number.toString()).getBytes())) //value
                 .forEach(record -> producer.send(record));
         producer.close();
     }
@@ -67,7 +69,10 @@ public class ProduceConsumeLongByteArrayRecord {
         ConsumerRecords<Long, byte[]> records = consumer.poll(10000);
 
         for (ConsumerRecord<Long, byte[]> record : records)
-            System.out.printf("key = %s value = %s%n", record.key(), new String(record.value()));
+            out.printf(
+                    "key = %s value = %s%n",
+                    record.key(),
+                    new String(record.value()));
 
         consumer.close();
     }

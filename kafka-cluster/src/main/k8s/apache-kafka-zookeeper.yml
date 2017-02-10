@@ -1,0 +1,147 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zk1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: zk1
+    spec:
+      containers:
+        - name: zk1
+          image: "jeqo/apache-kafka-zookeeper:0.10.1.1-2.11"
+          env:
+            - name: ZOOKEEPER_MYID
+              value: "1"
+          ports:
+            - containerPort: 2181
+          volumeMounts:
+            - name: "zookeeper-config"
+              mountPath: "/config"
+          command: ["/bin/sh","-c"]
+          args: ["/docker-entrypoint.sh && bin/zookeeper-server-start.sh /config/zookeeper.properties"]
+      volumes:
+          - name: zookeeper-config
+            configMap:
+              name: zookeeper-config
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zk2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: zk2
+    spec:
+      containers:
+        - name: zk2
+          image: "jeqo/apache-kafka-zookeeper:0.10.1.1-2.11"
+          env:
+            - name: ZOOKEEPER_MYID
+              value: "2"
+          ports:
+            - containerPort: 2181
+          volumeMounts:
+            - name: "zookeeper-config"
+              mountPath: "/config"
+          command: ["/bin/sh","-c"]
+          args: ["/docker-entrypoint.sh && bin/zookeeper-server-start.sh /config/zookeeper.properties"]
+      volumes:
+          - name: zookeeper-config
+            configMap:
+              name: zookeeper-config
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zk3
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: zk3
+    spec:
+      containers:
+        - name: zk3
+          image: "jeqo/apache-kafka-zookeeper:0.10.1.1-2.11"
+          env:
+            - name: ZOOKEEPER_MYID
+              value: "3"
+          ports:
+            - containerPort: 2181
+          volumeMounts:
+            - name: "zookeeper-config"
+              mountPath: "/config"
+          command: ["/bin/sh","-c"]
+          args: ["/docker-entrypoint.sh && bin/zookeeper-server-start.sh /config/zookeeper.properties"]
+      volumes:
+          - name: zookeeper-config
+            configMap:
+              name: zookeeper-config
+
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: zk1
+spec:
+  selector:
+    app: zk1
+  ports:
+    - protocol: TCP
+      port: 2181
+      name: zk
+    - protocol: TCP
+      port: 2888
+      name: zk1
+    - protocol: TCP
+      port: 3888
+      name: zk2
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: zk2
+spec:
+  selector:
+    app: zk2
+  ports:
+    - protocol: TCP
+      port: 2181
+      name: zk
+    - protocol: TCP
+      port: 2888
+      name: zk1
+    - protocol: TCP
+      port: 3888
+      name: zk2
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: zk3
+spec:
+  selector:
+    app: zk3
+  ports:
+    - protocol: TCP
+      port: 2181
+      name: zk
+    - protocol: TCP
+      port: 2888
+      name: zk1
+    - protocol: TCP
+      port: 3888
+      name: zk2
