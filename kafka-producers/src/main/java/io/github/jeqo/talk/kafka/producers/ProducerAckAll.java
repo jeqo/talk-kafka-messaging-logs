@@ -1,5 +1,10 @@
-package io.github.jeqo.talk.kafka.cluster;
+package io.github.jeqo.talk.kafka.producers;
 
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.Gauge;
+import io.prometheus.client.Histogram;
+import io.prometheus.client.Summary;
+import io.prometheus.client.exporter.PushGateway;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -9,15 +14,15 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 
+import java.io.IOException;
 import java.util.Properties;
 import java.util.stream.IntStream;
 
 /**
- * Created by jeqo on 06.02.17.
+ * Created by jeqo on 13.02.17.
  */
-public class Compaction {
-
-    private static final String TOPIC = "compacted";
+public class ProducerAckAll {
+    private static final String TOPIC = "ack-all";
 
     public static void main(String[] args) {
         Configuration config = ConfigurationProvider.getConfiguration();
@@ -30,18 +35,38 @@ public class Compaction {
     private static void produceRecords(String bootstrapServers) {
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.put(ProducerConfig.ACKS_CONFIG, "all");
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
         Producer<Integer, String> producer = new KafkaProducer<>(properties);
 
-        IntStream.rangeClosed(1, 10000).boxed()
+        CollectorRegistry registry = new CollectorRegistry();
+        final Histogram requestLatency = Histogram.build()
+                .name("kafka_producer_ack_all_latency")
+                .help("Request latency in seconds.")
+                .register(registry);
+
+        IntStream.rangeClosed(1, 100).boxed()
                 .map(number ->
                         new ProducerRecord<>(
                                 TOPIC,
-                                1, //Key
+                                number, //Key
                                 String.format("record-%s", number))) //Value
-                .forEach(record -> producer.send(record));
+                .forEach(record -> {
+                    Histogram.Timer requestTimer = requestLatency.startTimer();
+                    try {
+                        producer.send(record);
+                    } finally {
+                        try {
+                            requestTimer.observeDuration();
+                            PushGateway pg = new PushGateway("127.0.0.1:9091");
+                            pg.pushAdd(registry, "kafka-producer-ack");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
         producer.close();
     }
 }

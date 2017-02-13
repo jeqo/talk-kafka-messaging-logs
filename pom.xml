@@ -10,6 +10,7 @@
     <modules>
         <module>log-record</module>
         <module>kafka-cluster</module>
+        <module>kafka-producers</module>
     </modules>
 
     <packaging>pom</packaging>
