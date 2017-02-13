@@ -11,6 +11,7 @@
         <module>log-record</module>
         <module>kafka-cluster</module>
         <module>kafka-producers</module>
+        <module>kafka-consumers</module>
     </modules>
 
     <packaging>pom</packaging>
