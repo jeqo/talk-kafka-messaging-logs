@@ -1,0 +1,240 @@
+{
+  "type": "record",
+  "name": "Tweet",
+  "namespace": "com.eneco.trading.kafka.connect.twitter",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long"
+    },
+    {
+      "name": "created_at",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "user",
+      "type": {
+        "type": "record",
+        "name": "User",
+        "fields": [
+          {
+            "name": "id",
+            "type": "long"
+          },
+          {
+            "name": "name",
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          {
+            "name": "screen_name",
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          {
+            "name": "location",
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          {
+            "name": "verified",
+            "type": "boolean"
+          },
+          {
+            "name": "friends_count",
+            "type": "int"
+          },
+          {
+            "name": "followers_count",
+            "type": "int"
+          },
+          {
+            "name": "statuses_count",
+            "type": "int"
+          }
+        ],
+        "connect.name": "com.eneco.trading.kafka.connect.twitter.User"
+      }
+    },
+    {
+      "name": "text",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "lang",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "is_retweet",
+      "type": "boolean"
+    },
+    {
+      "name": "entities",
+      "type": {
+        "type": "record",
+        "name": "Entities",
+        "fields": [
+          {
+            "name": "hashtags",
+            "type": [
+              "null",
+              {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "Hashtag",
+                  "fields": [
+                    {
+                      "name": "text",
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    }
+                  ],
+                  "connect.name": "com.eneco.trading.kafka.connect.twitter.Hashtag"
+                }
+              }
+            ]
+          },
+          {
+            "name": "media",
+            "type": [
+              "null",
+              {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "Medium",
+                  "fields": [
+                    {
+                      "name": "display_url",
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    {
+                      "name": "expanded_url",
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    {
+                      "name": "id",
+                      "type": "long"
+                    },
+                    {
+                      "name": "type",
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    {
+                      "name": "url",
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    }
+                  ],
+                  "connect.name": "com.eneco.trading.kafka.connect.twitter.Medium"
+                }
+              }
+            ]
+          },
+          {
+            "name": "urls",
+            "type": [
+              "null",
+              {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "Url",
+                  "fields": [
+                    {
+                      "name": "display_url",
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    {
+                      "name": "expanded_url",
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    {
+                      "name": "url",
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    }
+                  ],
+                  "connect.name": "com.eneco.trading.kafka.connect.twitter.Url"
+                }
+              }
+            ]
+          },
+          {
+            "name": "user_mentions",
+            "type": [
+              "null",
+              {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "UserMention",
+                  "fields": [
+                    {
+                      "name": "id",
+                      "type": "long"
+                    },
+                    {
+                      "name": "name",
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    {
+                      "name": "screen_name",
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    }
+                  ],
+                  "connect.name": "com.eneco.trading.kafka.connect.twitter.UserMention"
+                }
+              }
+            ]
+          }
+        ],
+        "connect.name": "com.eneco.trading.kafka.connect.twitter.Entities"
+      }
+    }
+  ],
+  "connect.name": "com.eneco.trading.kafka.connect.twitter.Tweet"
+}"}

@@ -1,1 +1,3 @@
-# Created by .ignore support plugin (hsz.mobi)
+kafka-streams-connect/src/main/docker/twitter-connector/twitter-source.properties
+*.iml
+target/

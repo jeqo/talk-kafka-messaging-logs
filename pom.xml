@@ -12,6 +12,7 @@
         <module>kafka-cluster</module>
         <module>kafka-producers</module>
         <module>kafka-consumers</module>
+        <module>kafka-streams-connect</module>
     </modules>
 
     <packaging>pom</packaging>

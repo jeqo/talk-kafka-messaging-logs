@@ -1,0 +1,10 @@
+version: "2.1"
+services:
+  twitter_connector:
+    build: .
+    networks:
+      - default
+      - confluentplatform_default
+networks:
+  confluentplatform_default:
+    external: true
