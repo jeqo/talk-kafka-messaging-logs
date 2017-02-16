@@ -13,6 +13,7 @@
         <module>kafka-producers</module>
         <module>kafka-consumers</module>
         <module>kafka-streams-connect</module>
+        <module>akka-streams-kafka/java</module>
     </modules>
 
     <packaging>pom</packaging>

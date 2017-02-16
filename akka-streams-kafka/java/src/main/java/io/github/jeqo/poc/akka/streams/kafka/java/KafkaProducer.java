@@ -23,10 +23,10 @@ public class KafkaProducer {
 
         final Materializer materializer = ActorMaterializer.create(system);
 
-        final ProducerSettings<byte[], String> producerSettings = ProducerSettings
-                .create(system, new ByteArraySerializer(), new StringSerializer())
-                //.withProperty("zookeeper", "localhost:2181")
-                .withBootstrapServers("localhost:9092");
+        final ProducerSettings<byte[], String> producerSettings =
+                ProducerSettings
+                        .create(system, new ByteArraySerializer(), new StringSerializer())
+                        .withBootstrapServers("localhost:9092");
 
         CompletionStage<Done> done =
                 Source.range(1, 100)
@@ -37,8 +37,7 @@ public class KafkaProducer {
                                         0,
                                         Instant.now().getEpochSecond(),
                                         null,
-                                        elem
-                                ))
+                                        elem))
                         .runWith(Producer.plainSink(producerSettings), materializer);
 
         done.whenComplete((d, ex) -> System.out.println("sent"));
