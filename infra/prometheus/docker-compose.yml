@@ -1,0 +1,13 @@
+version: '2.1'
+services:
+  prometheus:
+    build: .
+    #image: prom/prometheus
+    ports:
+      - 9090:9090
+    links:
+      - pushgateway
+  pushgateway:
+    image: prom/pushgateway
+    ports:
+      - 9091:9091

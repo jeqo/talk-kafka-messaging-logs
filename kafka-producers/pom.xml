@@ -43,4 +43,60 @@
             <version>0.0.20</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>${finalName}</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>${mainClass}</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>ack-zero</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <finalName>kafka-producers-ack-zero</finalName>
+                <mainClass>io.github.jeqo.talk.kafka.producers.ProducerAckZero</mainClass>
+            </properties>
+        </profile>
+        <profile>
+            <id>ack-one</id>
+            <properties>
+                <finalName>kafka-producers-ack-one</finalName>
+                <mainClass>io.github.jeqo.talk.kafka.producers.ProducerAckOne</mainClass>
+            </properties>
+        </profile>
+        <profile>
+            <id>ack-all</id>
+            <properties>
+                <finalName>kafka-producers-ack-all</finalName>
+                <mainClass>io.github.jeqo.talk.kafka.producers.ProducerAckAll</mainClass>
+            </properties>
+        </profile>
+    </profiles>
 </project>

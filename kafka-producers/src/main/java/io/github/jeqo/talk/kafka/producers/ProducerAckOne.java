@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
  * Created by jeqo on 13.02.17.
  */
 public class ProducerAckOne {
-    private static final String TOPIC = "ack-one";
+    private static final String TOPIC = "ack-topic";
 
     public static void main(String[] args) {
         Configuration config = ConfigurationProvider.getConfiguration();
@@ -40,32 +40,8 @@ public class ProducerAckOne {
 
         Producer<Integer, String> producer = new KafkaProducer<>(properties);
 
-        CollectorRegistry registry = new CollectorRegistry();
-        final Histogram requestLatency = Histogram.build()
-                .name("kafka_producer_ack_one_latency")
-                .help("Request latency in seconds.")
-                .register(registry);
+        RecordsProducer.produce("kafka_producer_ack_one_latency", producer, TOPIC);
 
-        IntStream.rangeClosed(1, 100).boxed()
-                .map(number ->
-                        new ProducerRecord<>(
-                                TOPIC,
-                                number, //Key
-                                String.format("record-%s", number))) //Value
-                .forEach(record -> {
-                    Histogram.Timer requestTimer = requestLatency.startTimer();
-                    try {
-                        producer.send(record);
-                    } finally {
-                        try {
-                            requestTimer.observeDuration();
-                            PushGateway pg = new PushGateway("127.0.0.1:9091");
-                            pg.pushAdd(registry, "kafka-producer-ack");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
         producer.close();
     }
 }

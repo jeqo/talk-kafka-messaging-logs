@@ -1,0 +1,31 @@
+version: '2'
+services:
+  ack_zero:
+    build:
+      context: .
+      dockerfile: Dockerfile-ack-zero
+    networks:
+      - default
+      - kafkacluster_default
+      - prometheus_default
+  ack_one:
+    build:
+      context: .
+      dockerfile: Dockerfile-ack-one
+    networks:
+      - default
+      - kafkacluster_default
+      - prometheus_default
+  ack_all:
+    build:
+      context: .
+      dockerfile: Dockerfile-ack-all
+    networks:
+      - default
+      - kafkacluster_default
+      - prometheus_default
+networks:
+  kafkacluster_default:
+    external: true
+  prometheus_default:
+      external: true

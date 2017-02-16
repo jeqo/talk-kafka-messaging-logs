@@ -1,0 +1,8 @@
+FROM openjdk:8-jdk
+
+ENV KAFKA_BOOTSTRAP_SERVERS "kafka:9092"
+ENV PUSH_GATEWAY_SERVER "pushgateway:9091"
+
+ADD target/kafka-producers-ack-all-jar-with-dependencies.jar .
+
+CMD java -jar kafka-producers-ack-all-jar-with-dependencies.jar

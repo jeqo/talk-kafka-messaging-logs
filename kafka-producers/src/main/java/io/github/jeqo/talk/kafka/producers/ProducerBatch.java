@@ -41,36 +41,8 @@ public class ProducerBatch {
 
         Producer<Integer, String> producer = new KafkaProducer<>(properties);
 
-        CollectorRegistry registry = new CollectorRegistry();
-        final Histogram requestLatency = Histogram.build()
-                .name("kafka_producer_ack_all_latency")
-                .help("Request latency in seconds.")
-                .register(registry);
+        RecordsProducer.produce("kafka_producer_batch_latency", producer, TOPIC);
 
-        IntStream.rangeClosed(1, 100).boxed()
-                .map(number ->
-                        new ProducerRecord<>(
-                                TOPIC,
-                                number, //Key
-                                String.format("record-%s", number))) //Value
-                .forEach(record -> {
-                    Histogram.Timer requestTimer = requestLatency.startTimer();
-                    try {
-                        producer.send(record);
-                    } finally {
-                        try {
-                            requestTimer.observeDuration();
-                            Thread.sleep(1000);
-                            System.out.println("Sent");
-                            PushGateway pg = new PushGateway("127.0.0.1:9091");
-                            pg.pushAdd(registry, "kafka-producer-ack");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
         producer.close();
     }
 }
