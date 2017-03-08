@@ -1,20 +1,14 @@
 package io.github.jeqo.talk.kafka.producers;
 
-import io.prometheus.client.CollectorRegistry;
-import io.prometheus.client.Histogram;
-import io.prometheus.client.exporter.PushGateway;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 
-import java.io.IOException;
 import java.util.Properties;
-import java.util.stream.IntStream;
 
 /**
  * Created by jeqo on 13.02.17.

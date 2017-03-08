@@ -1,0 +1,38 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: kafka-broker
+spec:
+  serviceName: kafka-broker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kafka-broker
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: kafka
+        image: jeqo/apache-kafka:0.10.2.0-2.11
+        command: ["sh"]
+        args: ["bin/kafka-server-start.sh", "/config/server.properties"]
+        ports:
+        - containerPort: 9092
+          name: server
+        volumeMounts:
+        - name: kafka-data
+          mountPath: /tmp/kafka-logs
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        configMap:
+          name: kafka-config
+  volumeClaimTemplates:
+  - metadata:
+      name: kafka-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

@@ -23,8 +23,6 @@ import java.util.Properties;
 @Singleton
 public class KafkaTweetProcessor {
 
-    KTable<Long, String> tweets;
-
     @PostConstruct
     public void init() {
         Properties props = new Properties();
@@ -42,8 +40,6 @@ public class KafkaTweetProcessor {
                     return new KeyValue<>(tweet.getId(), tweet.getText().toString());
                 })
                 .to(Serdes.Long(), Serdes.String(), "processed-tweets");
-
-        tweets = builder.table(Serdes.Long(), Serdes.String(), "processed-tweets", "tweets-store");
 
         KafkaStreams streams = new KafkaStreams(builder, props);
         streams.start();

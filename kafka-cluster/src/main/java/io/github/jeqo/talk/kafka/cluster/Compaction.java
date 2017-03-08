@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
  */
 public class Compaction {
 
-    private static final String TOPIC = "compacted";
+    private static final String TOPIC = "nocompacted";
 
     public static void main(String[] args) {
         Configuration config = ConfigurationProvider.getConfiguration();

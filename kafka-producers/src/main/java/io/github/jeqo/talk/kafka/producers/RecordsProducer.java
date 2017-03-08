@@ -21,12 +21,12 @@ public class RecordsProducer {
 
         String pushGatewayServer = config.getOrDefault("PUSH_GATEWAY_SERVER", "localhost:9091");
 
-        CollectorRegistry registry = new CollectorRegistry();
+        /*CollectorRegistry registry = new CollectorRegistry();
         final Histogram requestLatency = Histogram
                 .build()
                 .help("Latency in seconds")
                 .name(metricName)
-                .register(registry);
+                .register(registry);*/
 
         IntStream.rangeClosed(1, 100).boxed()
                 .map(number ->
@@ -35,19 +35,19 @@ public class RecordsProducer {
                                 number, //Key
                                 String.format("record-%s", number))) //Value
                 .forEach(record -> {
-                    Histogram.Timer requestTimer = requestLatency.startTimer();
+                    //Histogram.Timer requestTimer = requestLatency.startTimer();
                     try {
                         producer.send(record);
                     } finally {
-                        try {
-                            requestTimer.observeDuration();
-                            System.out.println("Sent");
-                            Thread.sleep(1000);
+                        /*try {
+                            //requestTimer.observeDuration();
+                            //System.out.println("Sent");
+                            //Thread.sleep(1000);
                             PushGateway pg = new PushGateway(pushGatewayServer);
                             pg.pushAdd(registry, "kafka-producer-ack");
                         } catch (IOException | InterruptedException e) {
                             e.printStackTrace();
-                        }
+                        }*/
                     }
                 });
     }

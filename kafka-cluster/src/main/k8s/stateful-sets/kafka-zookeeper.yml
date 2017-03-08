@@ -1,0 +1,42 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: kafka-zookeeper
+spec:
+  serviceName: kafka-zookeeper
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kafka-zookeeper
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: zookeeper
+        image: jeqo/apache-kafka-zookeeper:0.10.2.0-2.11
+        command: ["sh"]
+        args: ["bin/zookeeper-server-start.sh", "/config/zookeeper.properties"]
+        ports:
+        - containerPort: 2181
+          name: client
+        - containerPort: 2888
+          name: server
+        - containerPort: 3888
+          name: leader-election
+        volumeMounts:
+        - name: zookeeper-data
+          mountPath: /tmp/zookeeper
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        configMap:
+          name: zookeeper-config
+  volumeClaimTemplates:
+  - metadata:
+      name: zookeeper-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
