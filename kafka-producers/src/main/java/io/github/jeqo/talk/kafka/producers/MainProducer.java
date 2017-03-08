@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.LongStream;
@@ -60,8 +61,8 @@ public class MainProducer {
                     .map(number ->
                             new ProducerRecord<>(
                                     topic,
-                                    number.toString(), //Key
-                                    generateMessage(number))) //Value
+                                    generateKey(number), //Key
+                                    generateValue(number))) //Value
                     .forEach(record -> {
                         Histogram.Timer requestTimer = requestLatency.startTimer();
                         try {
@@ -97,13 +98,28 @@ public class MainProducer {
 
     }
 
-    private static byte[] generateMessage(Long number) {
+    private static String generateKey(Long number) {
+        final Long keyMax = configuration.getOrDefault("KEY_MAX", Long.class, -1L);
+        final Long maxMessages = configuration.getOrDefault("MAX_MESSAGES", Long.class, 100L);
+        if (keyMax > 1) {
+            final Long rebased = ((maxMessages - 1) * (number - 1) / (keyMax - 1)) + 1;
+            return rebased.toString();
+        } else if (keyMax < 0) {
+            return number.toString();
+        } else {
+            return "KEY";
+        }
+    }
+
+    private static byte[] generateValue(Long number) {
         final Integer messageSize = configuration.getOrDefault("MESSAGE_SIZE", Integer.class, -1);
 
         if (messageSize < 0) {
             return String.format("record-%s", number).getBytes();
         } else {
-            return new byte[messageSize];
+            byte[] bytes = new byte[messageSize];
+            Arrays.fill( bytes, number.byteValue() );
+            return bytes;
         }
     }
 }
