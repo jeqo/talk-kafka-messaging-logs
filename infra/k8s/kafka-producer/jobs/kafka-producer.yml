@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-producer
+spec:
+  template:
+    metadata:
+      name: kafka-producer
+    spec:
+      containers:
+      - name: kafka-producer
+        image: jeqo/kafka-producer:1.0.0
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config
+      volumes:
+       - name: config-volume
+         configMap:
+           name: kafka-producer-config
+      restartPolicy: Never

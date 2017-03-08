@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: kafka-client
+  name: kafka-client
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kfka-client
+    spec:
+      containers:
+      - image: jeqo/apache-kafka-client:0.10.2.0-2.11
+        name: kafka-client
+        command: ["sh", "-c"]
+        args: ["sleep infinity"]

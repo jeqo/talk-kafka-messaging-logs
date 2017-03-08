@@ -14,8 +14,11 @@ spec:
       containers:
       - name: kafka
         image: jeqo/apache-kafka:0.10.2.0-2.11
-        command: ["sh"]
-        args: ["bin/kafka-server-start.sh", "/config/server.properties"]
+        command: ["/docker-entrypoint.sh"]
+        args: ["bin/kafka-server-start.sh", "config/server.properties"]
+        env:
+        - name: ADVERTISED_LISTENERS
+          value: "PLAINTEXT://kafka-cluster:9092"
         ports:
         - containerPort: 9092
           name: server

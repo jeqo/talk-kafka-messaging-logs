@@ -75,10 +75,17 @@
 
     <profiles>
         <profile>
-            <id>ack-zero</id>
+            <id>main</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+                <finalName>kafka-producer</finalName>
+                <mainClass>io.github.jeqo.talk.kafka.producers.MainProducer</mainClass>
+            </properties>
+        </profile>
+        <profile>
+            <id>ack-zero</id>
             <properties>
                 <finalName>kafka-producers-ack-zero</finalName>
                 <mainClass>io.github.jeqo.talk.kafka.producers.ProducerAckZero</mainClass>
