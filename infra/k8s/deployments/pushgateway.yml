@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: pushgateway
+  name: pushgateway
+  namespace: default
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: pushgateway
+    spec:
+      containers:
+      - image: prom/pushgateway:v0.3.1
+        name: pushgateway
+        ports:
+        - containerPort: 9091
+          name: server
+          protocol: TCP

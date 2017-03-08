@@ -1,8 +1,7 @@
-version: '2.1'
+version: '3'
 services:
   prometheus:
     build: .
-    #image: prom/prometheus
     ports:
       - 9090:9090
     links:

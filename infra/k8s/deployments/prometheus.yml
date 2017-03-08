@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: prometheus
+  name: prometheus
+  namespace: default
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+      - image: prom/prometheus:v1.5.2
+        name: prometheus
+        args: ["-config.file=/config/prometheus.yml"]
+        ports:
+        - containerPort: 9090
+          name: server
+          protocol: TCP
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config
+      volumes:
+       - name: config-volume
+         configMap:
+           name: prometheus-config
