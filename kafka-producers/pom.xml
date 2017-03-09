@@ -85,6 +85,13 @@
             </properties>
         </profile>
         <profile>
+            <id>batch</id>
+            <properties>
+                <finalName>kafka-producer-batch</finalName>
+                <mainClass>io.github.jeqo.talk.kafka.producers.BatchProducer</mainClass>
+            </properties>
+        </profile>
+        <profile>
             <id>ack-zero</id>
             <properties>
                 <finalName>kafka-producers-ack-zero</finalName>

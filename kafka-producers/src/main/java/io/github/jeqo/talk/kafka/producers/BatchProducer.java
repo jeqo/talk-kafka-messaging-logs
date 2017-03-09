@@ -1,23 +1,13 @@
 package io.github.jeqo.talk.kafka.producers;
 
-import io.prometheus.client.CollectorRegistry;
-import io.prometheus.client.Histogram;
-import io.prometheus.client.exporter.PushGateway;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.clients.producer.*;
 import org.apache.tamaya.Configuration;
 import org.apache.tamaya.ConfigurationProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.LongStream;
 
@@ -26,7 +16,7 @@ import static java.lang.System.out;
 /**
  *
  */
-public class MainProducer {
+public class BatchProducer {
     private final static Configuration configuration = ConfigurationProvider.getConfiguration();
 
     public static void main(String[] args) {
@@ -40,16 +30,6 @@ public class MainProducer {
                             new File(producerPropertiesPath)));
 
             Producer<String, byte[]> producer = new KafkaProducer<>(properties);
-
-            final String pushGatewayServer = configuration.getOrDefault("PUSH_GATEWAY_SERVER", "pushgateway:9091");
-            final String metricName = configuration.getOrDefault("METRIC_NAME", "kafka_producer");
-
-            final CollectorRegistry registry = new CollectorRegistry();
-            final Histogram requestLatency = Histogram
-                    .build()
-                    .help("Latency in seconds")
-                    .name(metricName)
-                    .register(registry);
 
             final String topic = configuration.getOrDefault("TOPIC", "topic1");
             final Long wait = configuration.getOrDefault("WAIT_SEG", Long.class, 1L);
@@ -72,47 +52,14 @@ public class MainProducer {
                                     topic,
                                     generateKey(number), //Key
                                     generateValue(number))) //Value
-                    .forEach(record -> {
-                        Histogram.Timer requestTimer = requestLatency.startTimer();
-                        try {
-                            out.println("preparing-"+record.key());
-                            producer.send(record, (metadata, e) -> printMetadata(metadata, e));
-                            out.println("sent-"+record.key());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        } finally {
-                            try {
-                                requestTimer.observeDuration();
-                                PushGateway pg = new PushGateway(pushGatewayServer);
-                                pg.pushAdd(registry, "kafka-producers");
-                                Thread.sleep(wait * 1000);
-                            } catch (IOException | InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                    .forEach(record -> producer.send(record, (recordMetadata, e) -> {
+
+                    }));
 
             producer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-    }
-
-    private static void printMetadata(RecordMetadata recordMetadata, Throwable ex) {
-        if(ex != null)
-            ex.printStackTrace();
-        Optional.ofNullable(recordMetadata)
-                .ifPresent(metadata -> out.printf(
-                        "Record saved: %s-%s offset=%s, timestamp=%s",
-                        metadata.topic(),
-                        metadata.partition(),
-                        metadata.offset(),
-                        LocalDateTime.ofInstant(
-                                Instant.ofEpochMilli(metadata.timestamp()),
-                                ZoneId.systemDefault())));
-        out.println();
     }
 
     private static String generateKey(Long number) {

@@ -11,7 +11,7 @@ import org.apache.tamaya.ConfigurationProvider;
 import java.util.Properties;
 
 /**
- * Created by jeqo on 13.02.17.
+ *
  */
 public class ProducerAckAll {
     private static final String TOPIC = "ack-topic";

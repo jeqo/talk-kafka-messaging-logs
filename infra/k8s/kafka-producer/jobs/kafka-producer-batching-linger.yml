@@ -1,0 +1,34 @@
+# This exercise is trying to fill 2 segments (20KB) that + additional metadata will compact 2 segments and we will end up
+# with a few more than 1 or 2 records available by compaction.
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-producer-batching-linger
+spec:
+  template:
+    metadata:
+      name: kafka-producer-batching-linger
+    spec:
+      containers:
+      - name: kafka-producer-batching-linger
+        image: jeqo/kafka-producer:1.0.0
+        env:
+        - name: PRODUCER_PROPS_PATH
+          value: "/config/producer-batching.properties"
+        - name: TOPIC
+          value: batch-linger
+        - name: WAIT_SEG
+          value: "1"
+        - name: MAX_MESSAGES
+          value: "100"
+        - name: MESSAGE_SIZE
+          value: "1000"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config
+      volumes:
+       - name: config-volume
+         configMap:
+           name: kafka-producer-config
+      restartPolicy: Never
