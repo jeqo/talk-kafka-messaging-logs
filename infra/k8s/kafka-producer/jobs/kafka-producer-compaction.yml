@@ -1,5 +1,5 @@
 # This exercise is trying to fill 2 segments (20KB) that + additional metadata will compact 2 segments and we will end up
-# with a few more than 1 or 2 records available.
+# with a few more than 1 or 2 records available by compaction.
 ---
 apiVersion: batch/v1
 kind: Job

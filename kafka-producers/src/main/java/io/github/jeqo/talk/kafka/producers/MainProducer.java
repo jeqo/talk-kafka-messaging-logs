@@ -118,7 +118,7 @@ public class MainProducer {
             return String.format("record-%s", number).getBytes();
         } else {
             byte[] bytes = new byte[messageSize];
-            Arrays.fill( bytes, number.byteValue() );
+            Arrays.fill( bytes, (byte) 1 );
             return bytes;
         }
     }
