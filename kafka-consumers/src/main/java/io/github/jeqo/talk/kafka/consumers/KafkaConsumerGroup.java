@@ -13,9 +13,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class KafkaConsumerGroup {
     public static void main(String[] args) {
-        int numConsumers = 3;
+        int numConsumers = 5;
         String groupId = "consumer-group";
-        List<String> topics = Arrays.asList("consumer-parallel");
+        List<String> topics = Arrays.asList("parallel-consumers");
         ExecutorService executor = Executors.newFixedThreadPool(numConsumers);
 
         final List<ConsumerLoop> consumers = new ArrayList<>();

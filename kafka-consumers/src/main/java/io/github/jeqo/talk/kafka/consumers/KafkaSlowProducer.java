@@ -13,10 +13,10 @@ import java.util.Properties;
 import java.util.stream.IntStream;
 
 /**
- * Created by jeqo on 13.02.17.
+ *
  */
 public class KafkaSlowProducer {
-    private static final String TOPIC = "consumer-parallel";
+    private static final String TOPIC = "parallel-consumers";
 
     public static void main(String[] args) {
         Configuration config = ConfigurationProvider.getConfiguration();

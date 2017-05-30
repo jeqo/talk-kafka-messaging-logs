@@ -115,7 +115,7 @@ public class MainProducer {
         out.println();
     }
 
-    private static String generateKey(Long number) {
+    static String generateKey(Long number) {
         final Long keyMax = configuration.getOrDefault("KEY_MAX", Long.class, -1L);
         final Long maxMessages = configuration.getOrDefault("MAX_MESSAGES", Long.class, 100L);
         if (keyMax > 1) {
@@ -128,7 +128,7 @@ public class MainProducer {
         }
     }
 
-    private static byte[] generateValue(Long number) {
+    static byte[] generateValue(Long number) {
         final Integer messageSize = configuration.getOrDefault("MESSAGE_SIZE", Integer.class, -1);
 
         if (messageSize < 0) {
