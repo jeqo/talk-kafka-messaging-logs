@@ -6,6 +6,7 @@ bin/kafka-topics.sh --zookeeper localhost:2181 \
                     --partitions 1 \
                     --replication-factor 1 \
                     --topic retention \
+                    --config cleanup.policy=delete \
                     --config segment.bytes=10000 \
                     --config retention.ms=30000
 # Retention is applied in "old" segments. Segment size segment.bytes=10000 10KB

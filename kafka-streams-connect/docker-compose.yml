@@ -1,12 +1,13 @@
 version: '2'
 services:
-  app:
-    build: .
-    ports:
-      - 8889:8080
-    networks:
-      - default
-      - confluentplatform_default
-networks:
-  confluentplatform_default:
-    external: true
+  schema-registry:
+    image: jeqo/confluent-platform-schema-registry:3.2.1
+    links:
+      - kafka
+      - zookeeper
+  kafka:
+    image: jeqo/confluent-platform-kafka:3.2.1
+    links:
+      - zookeeper
+  zookeeper:
+    image: jeqo/confluent-platform-zookeeper:3.2.1

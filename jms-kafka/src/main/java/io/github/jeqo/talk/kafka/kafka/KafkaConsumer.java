@@ -20,7 +20,6 @@ public class KafkaConsumer {
                         public void configure() throws Exception {
                             from("kafka:topic1" +
                                     "?brokers=docker-vm:9092" +
-                                    //"&groupId=group1" +
                                     "&autoOffsetReset=earliest")
                                     .process(exchange -> {
                                         String messageKey = "";

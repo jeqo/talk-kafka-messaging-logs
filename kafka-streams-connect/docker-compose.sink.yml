@@ -1,0 +1,6 @@
+version: '2'
+services:
+  file_connector:
+    build: file-connector
+    volumes:
+      - ./ouput:/tmp/output

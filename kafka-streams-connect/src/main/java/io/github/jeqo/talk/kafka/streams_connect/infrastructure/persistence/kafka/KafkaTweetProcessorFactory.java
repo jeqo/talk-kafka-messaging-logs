@@ -9,26 +9,18 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
-import org.apache.kafka.streams.kstream.KTable;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
 import java.util.Properties;
 
 /**
- * Created by jeqo on 14.02.17.
+ *
  */
-@Startup
-@Singleton
-public class KafkaTweetProcessor {
+public class KafkaTweetProcessorFactory {
 
-    @PostConstruct
-    public void init() {
+    public KafkaStreams build() {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "kafka-streams-processor");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
-        props.put(StreamsConfig.ZOOKEEPER_CONNECT_CONFIG, "zookeeper:2181");
         props.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
         props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://schema-registry:8081");
 
@@ -36,12 +28,11 @@ public class KafkaTweetProcessor {
 
         builder.stream("tweets")
                 .map((k, v) -> {
-                    Tweet tweet = (Tweet) SpecificData.get().deepCopy(Tweet.getClassSchema(), v);
+                    final Tweet tweet = (Tweet) SpecificData.get().deepCopy(Tweet.getClassSchema(), v);
                     return new KeyValue<>(tweet.getId(), tweet.getText().toString());
                 })
                 .to(Serdes.Long(), Serdes.String(), "processed-tweets");
 
-        KafkaStreams streams = new KafkaStreams(builder, props);
-        streams.start();
+        return new KafkaStreams(builder, props);
     }
 }
