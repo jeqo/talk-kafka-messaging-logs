@@ -1,5 +1,0 @@
-broker:
-  image: rmohr/activemq:5.14.3-alpine
-  ports:
-    - 61616:61616
-    - 8161:8161
