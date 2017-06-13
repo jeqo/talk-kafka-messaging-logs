@@ -29,9 +29,11 @@ public class KafkaTweetProcessorFactory {
         builder.stream("tweets")
                 .map((k, v) -> {
                     final Tweet tweet = (Tweet) SpecificData.get().deepCopy(Tweet.getClassSchema(), v);
-                    return new KeyValue<>(tweet.getId(), tweet.getText().toString());
-                })
-                .to(Serdes.Long(), Serdes.String(), "processed-tweets");
+                    return new KeyValue<>(tweet.getUser(), tweet);
+                }) // Map Avro binary to <User, Tweet>
+                .filter((k, v) -> !v.getIsRetweet()) // Filter tweets that are not re-tweeted
+                .map((k, v) -> new KeyValue<>(k.getName().toString(), v.getText().toString())) // Map to <Username, Tweet text>
+                .to(Serdes.String(), Serdes.String(), "processed-tweets");
 
         return new KafkaStreams(builder, props);
     }

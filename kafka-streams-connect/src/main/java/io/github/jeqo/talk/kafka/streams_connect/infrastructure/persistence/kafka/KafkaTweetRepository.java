@@ -31,8 +31,7 @@ public class KafkaTweetRepository implements TweetRepository {
                 STORE_NAME,
                 QueryableStoreTypes.<Long, String>keyValueStore());
         kvs.all().forEachRemaining(kv -> tweetsResult.add(kv.value));
-        return tweetsResult
-                .stream()
+        return tweetsResult.stream()
                 .filter(s -> s.toLowerCase().contains(filter.toLowerCase()))
                 .collect(toList());
     }
