@@ -11,7 +11,7 @@ import javax.jms.ConnectionFactory;
 /**
  *
  */
-public class JmsQueueConsumer {
+public class JmsTopicConsumer3 {
     public static void main(String[] args) throws Exception {
         final CamelContext context = new DefaultCamelContext();
         final ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
@@ -22,9 +22,12 @@ public class JmsQueueConsumer {
                 new RouteBuilder() {
                     @Override
                     public void configure() throws Exception {
-                        from("jms:queue:queue1")
-                                .to("log:jms-queue-consumer?showAll=true")
-                                .to("file:/tmp?fileName=jms-queue1-${date:now:yyyyMMddHHssSSS}.txt");
+                        from("jms:topic:topic1" +
+                                "?clientId=client3" +
+                                "&durableSubscriptionName=client3" +
+                                "&acknowledgementModeName=AUTO_ACKNOWLEDGE")
+                                .to("log:jms-topic-consumer2?showAll=true")
+                                .to("file:/tmp?fileName=jms-topic1-client2-${date:now:yyyyMMddHHssSSS}.txt");
                     }
                 });
         context.setTracing(true);
