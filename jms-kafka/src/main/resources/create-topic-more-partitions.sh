@@ -8,3 +8,6 @@ bin/kafka-topics.sh --zookeeper zookeeper:2181 \
 bin/kafka-topics.sh --describe \
                     --topic more-partitions \
                     --zookeeper zookeeper:2181
+
+bin/kafka-console-producer.sh --broker-list localhost:9092 \
+                    --topic more-partitions

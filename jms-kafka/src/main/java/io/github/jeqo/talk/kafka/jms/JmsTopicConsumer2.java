@@ -23,10 +23,8 @@ public class JmsTopicConsumer2 {
                     @Override
                     public void configure() throws Exception {
                         from("jms:topic:topic1" +
-                                "?clientId=client2" +
-                                "&acknowledgementModeName=AUTO_ACKNOWLEDGE")
-                                .to("log:jms-topic-consumer1?showAll=true")
-                                .to("file:/tmp?fileName=jms-topic1-client1-${date:now:yyyyMMddHHssSSS}.txt");
+                                "?clientId=client2")
+                                .log("${body}");
                     }
                 });
         context.setTracing(true);

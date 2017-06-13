@@ -41,7 +41,7 @@ public class Compaction {
                                 TOPIC,
                                 1, //Key
                                 String.format("record-%s", number))) //Value
-                .forEach(record -> producer.send(record));
+                .forEach(producer::send);
         producer.close();
     }
 }

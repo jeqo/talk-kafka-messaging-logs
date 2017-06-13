@@ -13,7 +13,7 @@ import java.util.Properties;
 import java.util.stream.IntStream;
 
 /**
- * Created by jeqo on 06.02.17.
+ *
  */
 public class Retention {
     private static final String TOPIC = "retention";
@@ -34,14 +34,13 @@ public class Retention {
 
         Producer<Integer, String> producer = new KafkaProducer<>(properties);
 
-        IntStream
-                .rangeClosed(1, 100000).boxed()
+        IntStream.rangeClosed(1, 100000).boxed()
                 .map(number ->
                         new ProducerRecord<>(
                                 TOPIC,
                                 1, //Key
                                 String.format("record-%s", number))) //Value
-                .forEach(record -> producer.send(record));
+                .forEach(producer::send);
         producer.close();
     }
 }

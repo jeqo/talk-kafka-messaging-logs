@@ -26,8 +26,7 @@ public class JmsTopicConsumer3 {
                                 "?clientId=client3" +
                                 "&durableSubscriptionName=client3" +
                                 "&acknowledgementModeName=AUTO_ACKNOWLEDGE")
-                                .to("log:jms-topic-consumer2?showAll=true")
-                                .to("file:/tmp?fileName=jms-topic1-client2-${date:now:yyyyMMddHHssSSS}.txt");
+                                .log("${body}");
                     }
                 });
         context.setTracing(true);
