@@ -9,7 +9,7 @@ import org.apache.camel.impl.DefaultCamelContext;
 /**
  *
  */
-public class KafkaConsumer {
+public class KafkaOtherConsumer {
 
     public static void main(String[] args) throws Exception {
         try {
@@ -18,9 +18,9 @@ public class KafkaConsumer {
                     new RouteBuilder() {
                         @Override
                         public void configure() throws Exception {
-                            from("kafka:topic1" +
+                            from("kafka:more-partitions" +
                                     "?brokers=docker-vm:9092" +
-                                    //"&groupId=group1" +
+                                    "&groupId=group1" +
                                     "&autoOffsetReset=earliest")
                                     .process(exchange -> {
                                         String messageKey = "";
