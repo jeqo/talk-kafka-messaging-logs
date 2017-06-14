@@ -33,7 +33,6 @@ public class JmsTopicConsumer1 {
                         log.info("About to start route: JMS Topic -> Log ");
                         from("jms:topic:topic1")
                                 .log("${body}");
-                        //.to("file:/tmp?fileName=jms-topic1-client1-${date:now:yyyyMMddHHssSSS}.txt");
                     }
                 });
         context.setTracing(true);

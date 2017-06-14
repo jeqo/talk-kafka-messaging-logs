@@ -23,8 +23,7 @@ public class JmsQueueConsumer {
                     @Override
                     public void configure() throws Exception {
                         from("jms:queue:queue1")
-                                .to("log:jms-queue-consumer?showAll=true")
-                                .to("file:/tmp?fileName=jms-queue1-${date:now:yyyyMMddHHssSSS}.txt");
+                                .log("${body}");
                     }
                 });
         context.setTracing(true);

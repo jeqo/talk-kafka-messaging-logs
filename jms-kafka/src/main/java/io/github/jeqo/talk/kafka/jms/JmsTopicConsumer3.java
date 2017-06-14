@@ -24,8 +24,7 @@ public class JmsTopicConsumer3 {
                     public void configure() throws Exception {
                         from("jms:topic:topic1" +
                                 "?clientId=client3" +
-                                "&durableSubscriptionName=client3" +
-                                "&acknowledgementModeName=AUTO_ACKNOWLEDGE")
+                                "&durableSubscriptionName=client3")
                                 .log("${body}");
                     }
                 });
